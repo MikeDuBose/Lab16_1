@@ -1,0 +1,152 @@
+﻿@model Lab16_1.Models.User
+
+@{
+    ViewData["Title"] = "User";
+}
+
+<h1>User</h1>
+
+<h4>User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="User" method="post" onsubmit="return validateForm()">
+
+            <div class="form-group">
+                <label class="control-label" for="FirstName">First Name</label>
+                <input class="form-control" type="text" id="FirstName" name="FirstName" value="" />
+                <span class="text-danger field-validation-valid" id="FirstNameFeedback" data-valmsg-for="FirstName" data-valmsg-replace="true"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="LastName">Last name</label>
+                <input class="form-control" type="text" id="LastName" name="LastName" value="" />
+                <span class="text-danger field-validation-valid" id="LastNameFeedback" data-valmsg-for="LastName" data-valmsg-replace="true"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="Email">E-mail Address</label>
+                <input class="form-control" type="text" id="Email" name="Email" value="" />
+                <span class="text-danger field-validation-valid" id="EmailFeedback" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="Password">Password (one uppercase, lowercase, number, and special character)</label>
+                <input class="form-control" type="text" id="Password" name="Password" value="" />
+                <span class="text-danger field-validation-valid" id="PWFeedback" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="ConfirmPassword">Confirm Password</label>
+                <input class="form-control" type="text" id="ConfirmPassword" name="ConfirmPassword" value="" />
+                <span class="text-danger field-validation-valid" id="PWConfirmFeedback" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+            </div>
+            <div id="Feedback"></div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+            <input name="__RequestVerificationToken" type="hidden" value="CfDJ8A3y19j3c1lPnoLmbgNMjh5YtZCXU5c6ola5Aabv6WFAD29N69y23KckdEedG0E3y4DvSDSohdI4p4L8PH-tXyDevYPKELWK1F96Nf25DSxWpL0m5LWQxkPm6ER0CKvWMOjfhSPoyP027ej0PzdtYic" />
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+<script>
+    function validateForm() {
+        let result = validateFirstName() & validateLastName() & validateEmail() & validatePassword() & validateConfirmPassword();
+        if (!result) {
+            document.querySelector("#Feedback").innerHTML = "Your form has errors. See above.";
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function validateFirstName() {
+        let name = document.querySelector("#FirstName").value;
+        let warning = '';
+
+        if (!name || name.length < 3) {
+            warning += 'First Name is empty or too short. ';
+        } else if (name.length > 30) {
+            warning += 'First Name is too long. ';
+        }
+
+        if (warning == '') {
+            document.querySelector("#FirstNameFeedback").innerHTML = '';
+            return true;
+        } else {
+            //display the warning in the span set up for it
+            document.querySelector("#FirstNameFeedback").innerHTML = warning;
+            //add a CSS class to an element
+            return false;
+        }
+    }
+
+    function validateLastName() {
+        let name = document.querySelector("#LastName").value;
+        let warning = '';
+
+        if (!name || name.length < 3) {
+            warning += 'Last Name is empty or too short. ';
+        } else if (name.length > 30) {
+            warning += 'Last Name is too long. ';
+        }
+
+        if (warning == '') {
+            document.querySelector("#LastNameFeedback").innerHTML = '';
+            return true;
+        } else {
+            //display the warning in the span set up for it
+            document.querySelector("#LastNameFeedback").innerHTML = warning;
+            //add a CSS class to an element
+            return false;
+        }
+    }
+
+    function validateEmail() {
+        let email = document.querySelector("#Email").value;
+        let warning = '';
+        let regex = /(\w){2,}@@(\w){2,}\.(\w){2,}/;
+        if (!regex.test(email)) {
+            warning += 'Invalid email';
+        }
+        if (warning == '') {
+            return true;
+        }
+        else {
+            document.querySelector("#EmailFeedback").innerHTML = warning;
+            return false;
+        }
+    }
+
+    function validatePassword() {
+        let password = document.querySelector("#Password").value;
+        alert('The password is ' + password);
+        let warning = '';
+        let regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}/
+        if (!regex.test(password) || password == '') {
+            warning += 'Invalid password, please be sure it meets the minimum requirments: 8 characters, one capital letter, one lower-case letter, one number, and one symbol.';
+            document.querySelector("#PWFeedback").innerHTML = warning;
+            return false;
+        }
+        if (warning == '') {
+            return true;
+        }
+    }
+
+    function validateConfirmPassword() {
+        let password = document.querySelector("#Password").value;
+        let confirmPassword = document.querySelector("#ConfirmPassword").value;
+        let warning = '';
+        if (password != confirmPassword) {
+            warning += 'Your passwords do not match. Please try again.';
+        }
+        if (warning == '') {
+            return true;
+        }
+        else {
+            document.querySelector("#PWConfirmFeedback").innerHTML = warning;
+            return false;
+        }
+    }
+</script>
